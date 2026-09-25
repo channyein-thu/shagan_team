@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// A buyer is the customer who purchased one or more Shagan services.
+// Each purchased service (organization/school/course) lives on a
+// separate standalone backend; BuyerService just links this buyer to
+// that external record (org_id, school_id, course_id + its type).
+model Buyer {
+  id             String         @id @default(cuid())
+  name           String
+  email          String
+  phone          String?
+  company        String?
+  billingAddress String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  services       BuyerService[]
+}
+
+model BuyerService {
+  id     String @id @default(cuid())
+  buyerId String
+  buyer   Buyer  @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+
+  // "organization" | "school" | "course" - kept as a plain string since
+  // SQLite/Prisma enums aren't a great fit here and this stays app-level.
+  serviceType String
+
+  // The ID of this service in its own backend (Go POS org id today;
+  // school/course backends don't exist yet, see `metadata`/mock ids).
+  externalId String
+
+  // Display name captured at purchase time (org/school/course name).
+  label String
+
+  // For "organization" this is informational only - the Go backend is
+  // the source of truth for org status. For "school"/"course" (mocked,
+  // no real backend yet) this IS the source of truth.
+  status String @default("active")
+
+  // JSON blob for service-specific mock details (school/course only).
+  metadata String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  students  MockStudent[]
+
+  @@unique([serviceType, externalId])
+  @@index([buyerId])
+}
+
+// Mock student roster for "school"/"course" services (no real backend yet).
+model MockStudent {
+  id        String       @id @default(cuid())
+  serviceId String
+  service   BuyerService @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  name      String
+  email     String
+  status    String       @default("active")
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@index([serviceId])
+}
