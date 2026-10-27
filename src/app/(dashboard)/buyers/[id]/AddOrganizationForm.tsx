@@ -4,8 +4,7 @@ import { useActionState, useRef, useState } from "react";
 import { Modal } from "@/components/Modal";
 import { Field } from "@/components/FormField";
 import { Button } from "@/components/Button";
-import { BuildingIcon, PlusIcon } from "@/components/icons";
-import { SERVICE_COLORS } from "@/lib/buyer/types";
+import { PlusIcon } from "@/components/icons";
 import { addOrganizationServiceAction } from "./actions";
 import type { ActionState } from "@/lib/action-state";
 
@@ -28,19 +27,15 @@ export function AddOrganizationForm({ buyerId }: { buyerId: string }) {
 
   return (
     <>
-      <button
-        onClick={() => setOpen(true)}
-        className={`inline-flex items-center gap-2 rounded-lg border bg-white px-4 py-2.5 text-sm font-medium transition-colors ${SERVICE_COLORS.organization.button}`}
-      >
-        <BuildingIcon className="h-4 w-4" />
-        Add Organization
-        <PlusIcon className="h-3.5 w-3.5" />
-      </button>
+      <Button onClick={() => setOpen(true)}>
+        <PlusIcon className="h-4 w-4" />
+        Add organization
+      </Button>
 
       <Modal
         open={open}
         onClose={() => setOpen(false)}
-        title="Add Organization service"
+        title="Add POS organization"
         description="Creates a real POS tenant on the Shagan backend and links it to this buyer."
       >
         <form
@@ -84,7 +79,7 @@ export function AddOrganizationForm({ buyerId }: { buyerId: string }) {
             />
           </div>
           {state.error && (
-            <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">
+            <p className="rounded-lg bg-danger-soft px-3 py-2 text-sm text-danger">
               {state.error}
             </p>
           )}

@@ -29,23 +29,23 @@ export function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-[2px]"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-4 backdrop-blur-[2px]"
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-lg rounded-2xl bg-white p-8 shadow-2xl ring-1 ring-slate-900/5"
+        className="relative w-full max-w-lg rounded-2xl bg-surface p-8 shadow-2xl ring-1 ring-ink/5"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
           aria-label="Close"
-          className="absolute right-5 top-5 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+          className="absolute right-5 top-5 rounded-md p-1 text-ink-muted hover:bg-neutral-soft hover:text-ink"
         >
           <XIcon className="h-4 w-4" />
         </button>
-        <h2 className="mb-1 text-xl font-bold text-slate-900">{title}</h2>
+        <h2 className="mb-1 text-xl font-bold text-ink">{title}</h2>
         {description && (
-          <p className="mb-4 text-sm text-slate-500">{description}</p>
+          <p className="mb-4 text-sm text-ink-muted">{description}</p>
         )}
         <div className={description ? "" : "mt-6"}>{children}</div>
       </div>

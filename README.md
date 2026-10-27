@@ -30,9 +30,8 @@ every admin can do everything.
 
 | Data | Lives in | Why |
 |---|---|---|
-| Admin users, buyers (customers of Shagan), the services each bought | Prisma / SQLite (`dev.db`) | Shagan's own CRM data - the POS backend doesn't know about it |
+| Admin users, buyers (customers of Shagan), the POS organizations each bought | Prisma / SQLite (`dev.db`) | Shagan's own CRM data - the POS backend doesn't know about it |
 | POS organisations, branches, devices, POS accounts | **shagan_pos** backend via `/internal/*` | The backend is the source of truth; this app never stores them |
-| Schools / courses and their students | Prisma (`MockStudent`) | **Mock products** - no real backend yet |
 
 `BuyerService` links the two: for an organisation, `externalId` is the backend's
 org id, and the org's live status is always read from the backend.
@@ -43,8 +42,7 @@ org id, and the org's live status is always read from the backend.
 |---|---|
 | `AdminUser` | Portal login (email unique, bcrypt `passwordHash`) |
 | `Buyer` | A customer of Shagan: name, email, phone, company, billing address |
-| `BuyerService` | A service a buyer bought: `serviceType` (`organization` / `school` / `course`), `externalId`, status, JSON metadata. Unique on `(serviceType, externalId)` |
-| `MockStudent` | Mock roster for school / course services |
+| `BuyerService` | Links a buyer to a POS organization in the backend: `serviceType` (always `organization`), `externalId` (the org id), status. Unique on `(serviceType, externalId)` |
 
 ## Backend integration
 
@@ -67,9 +65,8 @@ org id, and the org's live status is always read from the backend.
 | Route | What it does |
 |---|---|
 | `/login` | Sign in |
-| `/` | Buyers list, totals by service type, create buyer |
-| `/buyers/[id]` | A buyer's services; add a POS organisation or a mock school/course |
-| `/buyers/[id]/services/[serviceId]` | Mock school/course: status, students |
+| `/` | Buyers list with totals, create buyer |
+| `/buyers/[id]` | A buyer's POS organizations; add one |
 | `/organizations/[id]` | A POS org from the backend: status, branches, devices, POS accounts (create, suspend, reset password) |
 
 ## Run it locally
@@ -117,7 +114,7 @@ org id, and the org's live status is always read from the backend.
 **Missing features**
 - No organisations list page; `/organizations/[id]` loads every org to find
   one (the backend has no get-by-id route - backend recommendation #11).
-- No edit / delete for buyers, services or students; no admin user management
+- No edit / delete for buyers or organizations; no admin user management
   (seed only).
 - Owner / service-center logins are created but not shown.
 

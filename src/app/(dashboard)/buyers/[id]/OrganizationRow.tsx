@@ -1,43 +1,53 @@
 import Link from "next/link";
 import { StatusBadge } from "@/components/StatusBadge";
-import { ArrowRightIcon } from "@/components/icons";
-import { SERVICE_COLORS, SERVICE_ICONS, SERVICE_LABELS } from "@/lib/buyer/types";
-import type { ServiceType } from "@/lib/buyer/types";
+import { PlanBadge } from "@/components/PlanBadge";
+import type { Organization } from "@/lib/backend/types";
+import { ArrowRightIcon, BuildingIcon } from "@/components/icons";
 
-export function ServiceRow({
-  serviceType,
+export function OrganizationRow({
   label,
+  org,
   status,
-  contactEmail,
   manageHref,
 }: {
-  serviceType: ServiceType;
   label: string;
+  /** The live organization, for its tier; missing if the backend lost it. */
+  org?: Organization;
   status: "active" | "suspended";
-  contactEmail?: string | null;
   manageHref: string;
 }) {
-  const Icon = SERVICE_ICONS[serviceType];
-
   return (
-    <tr className="transition-colors hover:bg-slate-50/80">
+    <tr className="transition-colors hover:bg-canvas">
       <td className="px-5 py-4">
-        <span
-          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${SERVICE_COLORS[serviceType].badge}`}
-        >
-          <Icon className="h-3.5 w-3.5" />
-          {SERVICE_LABELS[serviceType]}
-        </span>
+        <div className="flex items-center gap-3">
+          <span className="flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-primary-soft text-primary">
+            <BuildingIcon className="h-4 w-4" />
+          </span>
+          <span className="font-medium text-ink">{label}</span>
+        </div>
       </td>
-      <td className="px-5 py-4 font-medium text-slate-900">{label}</td>
-      <td className="px-5 py-4 text-slate-500">{contactEmail ?? "—"}</td>
+      <td className="px-5 py-4">
+        {org ? (
+          <div className="flex items-center gap-2">
+            <PlanBadge
+              plan={org.effective_plan}
+              trial={org.plan_trial && org.effective_plan === org.plan}
+            />
+            {org.over_limit && (
+              <span className="text-xs font-medium text-warning">over limit</span>
+            )}
+          </div>
+        ) : (
+          <span className="text-ink-muted">—</span>
+        )}
+      </td>
       <td className="px-5 py-4">
         <StatusBadge status={status} />
       </td>
       <td className="px-5 py-4 text-right">
         <Link
           href={manageHref}
-          className="inline-flex items-center gap-1 text-sm font-medium text-indigo-600 hover:text-indigo-700"
+          className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:text-primary-hover"
         >
           Manage
           <ArrowRightIcon className="h-3.5 w-3.5" />

@@ -30,7 +30,7 @@ export function CreateDeviceForm({
 
   if (branches.length === 0) {
     return (
-      <p className="rounded-xl border border-dashed border-slate-300 bg-slate-50/60 p-4 text-sm text-slate-500">
+      <p className="rounded-xl border border-dashed border-primary-border bg-primary-soft/40 p-4 text-sm text-ink-muted">
         Add a branch before creating devices.
       </p>
     );
@@ -40,10 +40,10 @@ export function CreateDeviceForm({
     <form
       ref={formRef}
       action={formAction}
-      className="flex flex-col gap-3 rounded-xl border border-dashed border-slate-300 bg-slate-50/60 p-4"
+      className="flex flex-col gap-3 rounded-xl border border-dashed border-primary-border bg-primary-soft/40 p-4"
     >
       <input type="hidden" name="org_id" value={orgId} />
-      <h3 className="text-sm font-semibold text-slate-700">Add device</h3>
+      <h3 className="text-sm font-semibold text-ink">Add device</h3>
       <div className="grid grid-cols-2 gap-3">
         <input
           name="name"
@@ -68,7 +68,7 @@ export function CreateDeviceForm({
         </select>
       </div>
       {state.error && (
-        <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">
+        <p className="rounded-lg bg-danger-soft px-3 py-2 text-sm text-danger">
           {state.error}
         </p>
       )}

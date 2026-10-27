@@ -37,13 +37,13 @@ export function StatusToggleButton({
         disabled={pending}
         className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors disabled:opacity-50 ${
           isSuspending
-            ? "border-rose-200 text-rose-600 hover:bg-rose-50"
-            : "border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+            ? "border-danger/30 text-danger hover:bg-danger-soft"
+            : "border-success/30 text-success hover:bg-success-soft"
         }`}
       >
         {pending ? "Updating…" : isSuspending ? "Suspend" : "Reactivate"}
       </button>
-      {error && <span className="text-xs text-rose-600">{error}</span>}
+      {error && <span className="text-xs text-danger">{error}</span>}
     </div>
   );
 }
