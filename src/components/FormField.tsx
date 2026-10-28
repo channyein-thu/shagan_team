@@ -13,7 +13,7 @@ export function Field({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={name} className="text-sm font-medium text-slate-700">
+      <label htmlFor={name} className="text-sm font-medium text-ink">
         {label}
       </label>
       <input
@@ -23,7 +23,7 @@ export function Field({
         required={required}
         defaultValue={defaultValue}
         minLength={type === "password" ? 8 : undefined}
-        className="rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition-shadow focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+        className="rounded-lg border border-border bg-surface px-3.5 py-2.5 text-sm text-ink outline-none transition-shadow focus:border-primary focus:ring-4 focus:ring-primary/10"
       />
     </div>
   );

@@ -10,16 +10,51 @@ import type {
   Device,
   OrgStatus,
   Organization,
+  PlanCatalog,
+  Subscription,
+  UpdateSubscriptionInput,
 } from "./types";
 
 export class BackendError extends Error {
   status: number;
+  /** Machine-readable reason, e.g. "plan_limit_reached". */
+  code?: string;
+  /** The rest of the error body (e.g. limit, max, current). */
+  details: Record<string, unknown>;
 
-  constructor(status: number, message: string) {
+  constructor(
+    status: number,
+    message: string,
+    code?: string,
+    details: Record<string, unknown> = {},
+  ) {
     super(message);
     this.name = "BackendError";
     this.status = status;
+    this.code = code;
+    this.details = details;
   }
+}
+
+// Error bodies look like {success:false, message, errors, code?, ...details}.
+function toBackendError(status: number, text: string, fallback: string) {
+  try {
+    const body = JSON.parse(text) as Record<string, unknown>;
+    if (typeof body.message === "string") {
+      const { message, code, ...rest } = body;
+      const details = { ...rest };
+      delete details.success;
+      return new BackendError(
+        status,
+        message,
+        typeof code === "string" ? code : undefined,
+        details,
+      );
+    }
+  } catch {
+    // Not JSON - fall through to the raw text.
+  }
+  return new BackendError(status, text || fallback);
 }
 
 function backendUrl(): string {
@@ -51,7 +86,7 @@ async function backendFetch<T>(path: string, init?: RequestInit): Promise<T> {
 
   if (!res.ok) {
     const text = await res.text().catch(() => "");
-    throw new BackendError(res.status, text || res.statusText);
+    throw toBackendError(res.status, text, res.statusText);
   }
 
   if (res.status === 204) {
@@ -125,6 +160,13 @@ export async function createOrganization(input: CreateAccountInput) {
 export async function listOrganizations() {
   const orgs = await backendFetch<Organization[]>("/internal/organizations");
   return orgs.map(normalizeOrganization);
+}
+
+export async function getOrganization(orgId: string) {
+  const org = await backendFetch<Organization>(
+    `/internal/organizations/${encodeURIComponent(orgId)}`,
+  );
+  return normalizeOrganization(org);
 }
 
 export function setOrganizationStatus(orgId: string, status: OrgStatus) {
@@ -211,4 +253,67 @@ export function resetPosPassword(accountId: string, password: string) {
       body: JSON.stringify({ password }),
     },
   );
+}
+
+// Subscription tiers
+
+export function listPlans() {
+  return backendFetch<PlanCatalog>("/internal/plans");
+}
+
+function normalizeSubscription(sub: Subscription): Subscription {
+  return {
+    ...coerceIds(sub, ["organization_id"]),
+    overrides: sub.overrides.map((o) => coerceIds(o, ["id", "org_id"])),
+    history: sub.history.map((h) => coerceIds(h, ["id", "org_id"])),
+  };
+}
+
+export async function getSubscription(orgId: string) {
+  const sub = await backendFetch<Subscription>(
+    `/internal/organizations/${encodeURIComponent(orgId)}/subscription`,
+  );
+  return normalizeSubscription(sub);
+}
+
+export async function updateSubscription(
+  orgId: string,
+  input: UpdateSubscriptionInput,
+) {
+  const sub = await backendFetch<Subscription>(
+    `/internal/organizations/${encodeURIComponent(orgId)}/subscription`,
+    { method: "PATCH", body: JSON.stringify(input) },
+  );
+  return normalizeSubscription(sub);
+}
+
+export async function setFeatureOverride(
+  orgId: string,
+  feature: string,
+  enabled: boolean,
+  changedBy: string,
+) {
+  const sub = await backendFetch<Subscription>(
+    `/internal/organizations/${encodeURIComponent(orgId)}/features/${encodeURIComponent(feature)}`,
+    {
+      method: "PUT",
+      body: JSON.stringify({ enabled, changed_by: changedBy }),
+    },
+  );
+  return normalizeSubscription(sub);
+}
+
+export async function clearFeatureOverride(
+  orgId: string,
+  feature: string,
+  changedBy: string,
+) {
+  const sub = await backendFetch<Subscription>(
+    `/internal/organizations/${encodeURIComponent(orgId)}/features/${encodeURIComponent(feature)}`,
+    {
+      method: "DELETE",
+      body: JSON.stringify({ changed_by: changedBy }),
+    },
+  );
+  return normalizeSubscription(sub);
 }

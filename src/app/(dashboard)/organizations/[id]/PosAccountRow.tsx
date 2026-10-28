@@ -27,14 +27,14 @@ export function PosAccountRow({
   const [resetting, setResetting] = useState(false);
 
   return (
-    <tr className="transition-colors hover:bg-slate-50/80">
+    <tr className="transition-colors hover:bg-canvas">
       <td className="px-5 py-3.5">
         <div className="flex items-center gap-3">
           <Avatar name={email} size="sm" />
-          <span className="font-medium text-slate-900">{email}</span>
+          <span className="font-medium text-ink">{email}</span>
         </div>
       </td>
-      <td className="px-5 py-3.5 text-slate-500">{device?.name ?? "—"}</td>
+      <td className="px-5 py-3.5 text-ink-muted">{device?.name ?? "—"}</td>
       <td className="px-5 py-3.5">
         <StatusBadge status={status} />
       </td>
@@ -102,13 +102,13 @@ function ResetPasswordForm({
         placeholder="New password"
         required
         minLength={8}
-        className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-900 outline-none transition-shadow focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+        className="rounded-lg border border-border bg-surface px-2.5 py-1.5 text-xs text-ink outline-none transition-shadow focus:border-primary focus:ring-4 focus:ring-primary/10"
       />
       <Button type="submit" disabled={pending} size="sm">
         {pending ? "Saving…" : "Save"}
       </Button>
       {state.error && (
-        <span className="text-xs text-rose-600">{state.error}</span>
+        <span className="text-xs text-danger">{state.error}</span>
       )}
     </form>
   );

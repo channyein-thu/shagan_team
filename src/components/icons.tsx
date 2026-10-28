@@ -10,22 +10,6 @@ export function BuildingIcon({ className = base }: IconProps) {
   );
 }
 
-export function GraduationCapIcon({ className = base }: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className={className}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M22 9 12 4 2 9l10 5 10-5Zm0 0v6M6 11.5V17c0 1.5 2.5 3.5 6 3.5s6-2 6-3.5v-5.5" />
-    </svg>
-  );
-}
-
-export function BookOpenIcon({ className = base }: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className={className}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.5c-1.5-1.3-4-2-7-1.5v13c3-.5 5.5.2 7 1.5m0-13c1.5-1.3 4-2 7-1.5v13c-3-.5-5.5.2-7 1.5m0-13v13" />
-    </svg>
-  );
-}
-
 export function UsersIcon({ className = base }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className={className}>

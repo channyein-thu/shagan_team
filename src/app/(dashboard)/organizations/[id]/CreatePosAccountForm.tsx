@@ -30,7 +30,7 @@ export function CreatePosAccountForm({
 
   if (devices.length === 0) {
     return (
-      <p className="rounded-xl border border-dashed border-slate-300 bg-slate-50/60 p-4 text-sm text-slate-500">
+      <p className="rounded-xl border border-dashed border-primary-border bg-primary-soft/40 p-4 text-sm text-ink-muted">
         Add a device before creating POS accounts.
       </p>
     );
@@ -40,10 +40,10 @@ export function CreatePosAccountForm({
     <form
       ref={formRef}
       action={formAction}
-      className="flex flex-col gap-3 rounded-xl border border-dashed border-slate-300 bg-slate-50/60 p-4"
+      className="flex flex-col gap-3 rounded-xl border border-dashed border-primary-border bg-primary-soft/40 p-4"
     >
       <input type="hidden" name="org_id" value={orgId} />
-      <h3 className="text-sm font-semibold text-slate-700">
+      <h3 className="text-sm font-semibold text-ink">
         Add POS account
       </h3>
       <div className="grid grid-cols-3 gap-3">
@@ -79,7 +79,7 @@ export function CreatePosAccountForm({
         />
       </div>
       {state.error && (
-        <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">
+        <p className="rounded-lg bg-danger-soft px-3 py-2 text-sm text-danger">
           {state.error}
         </p>
       )}
