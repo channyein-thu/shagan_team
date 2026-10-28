@@ -56,7 +56,7 @@ export function CreateBuyerForm() {
             />
           </div>
           {state.error && (
-            <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">
+            <p className="rounded-lg bg-danger-soft px-3 py-2 text-sm text-danger">
               {state.error}
             </p>
           )}
